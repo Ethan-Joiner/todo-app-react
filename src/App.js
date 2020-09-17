@@ -16,27 +16,52 @@ function App() {
   const FilterHandler = () => {
     switch(status) {
       case 'completed':
-        setFilteredTodos(todos.filter(todo => todo.completed));
+        setFilteredTodos(todos.filter(todo => todo.completed === true));
         break;
       case 'uncompleted':
-        setFilteredTodos(todos.filter(todo => !todo.complete));  
+        setFilteredTodos(todos.filter(todo => todo.completed ===false));  
         break;
       default:
         setFilteredTodos(todos);
         break;  
     }
-  }
+  };
+
+ 
+
+  // Save to Local Storage
+  const saveLocalTodos = () => {
+   
+      localStorage.setItem('todos',JSON.stringify(todos));
+    
+  };
+
+  const getLocalTodos = () => {
+    if(localStorage.getItem('todos') === null){
+      localStorage.setItem('todos', JSON.stringify([]));
+    } else {
+      let todoLocal = localStorage.setItem('todos',JSON.stringify(todos));
+      setTodos(todoLocal);
+    }
+  };
 
    // Use Effect
    useEffect(() => {
     FilterHandler();
+    saveLocalTodos();
   },[todos,status]);
+
+  // useEffect(() => {
+  //   getLocalTodos();
+  // },[]);
+  
+  console.log(filteredTodos);
 
   // Rendering Components
   return (
     <div className="App">
       <header>
-        <h1>`Ethan's Todo List`</h1>
+        <h1>Ethan's Todo List</h1>
       </header>
       <Form inputText={inputText} 
             setInputText={setInputText} 
@@ -46,7 +71,6 @@ function App() {
 
       <TodoList todos={todos} 
                 setTodos={setTodos} 
-                status={status} 
                 filteredTodos={filteredTodos} 
                 />
     </div>
